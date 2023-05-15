@@ -163,6 +163,7 @@ a:hover{
     font-size: 2.5rem;
 } 
 .header-facultyLogin{
+    text-decoration: underline;
     position:absolute;
     right: 5%;
     /* align-self: flex-end; */
