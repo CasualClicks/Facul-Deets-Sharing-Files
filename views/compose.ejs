@@ -92,9 +92,9 @@
 
 </head>
 <body>
-     <% if(canCompose){ %>
+     <% if(isData == true){ %>
         <h3> Can't Compose, Page Already exists, would you like to <a href="/login/edit/<%= userId %>">Edit ?</a></h3>
-     <%} else if (!canCompose){ %>
+     <%} else if (isData == false){ %>
         <!-- <p> I would make a form here later on </p> -->
         <div class="container mt-5">
          <div class="row d-flex justify-content-center align-items-center">

@@ -14,7 +14,8 @@ app.use(express.static("public"));
 
 // MongoDB 
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://127.0.0.1:27017/facultyDB", {useNewUrlParser:true,useUnifiedTopology: true});
+const e = require("express");
+mongoose.connect("mongodb+srv://shivam:Af7UZuvf55lAXesd@facul-deets-cluster.su1btrk.mongodb.net/facultyDB", {useNewUrlParser:true,useUnifiedTopology: true});
 
 const facultyLoginSchema = new mongoose.Schema({
     id: Number,
@@ -134,7 +135,7 @@ app.get("/login/compose/:id", function(req, res){
             status = true;
 
     });
-    res.render("compose", {userId: req.params.id, canCompose: status});
+    res.render("compose", {userId: req.params.id, isData: status});
 });
 
 app.post("/login/compose/:id", function(req,res){
@@ -168,7 +169,14 @@ app.post("/login/compose/:id", function(req,res){
 });
 
 app.get("/login/edit/:id", function(req, res){
-    
+    var status = false;
+    facultyInfoCollection.findOne({id: req.params.id}, function(err,found){
+        if(err)
+            console.log(err);
+        else if(found)
+            status = true;
+    });
+    res.render("edit", {userId: req.params.id, canEdit: status});
 });
 
 
