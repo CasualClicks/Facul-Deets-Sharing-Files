@@ -2,6 +2,7 @@ const express= require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const lodash = require('lodash');
+const multer = require('multer');
 const { Mongoose } = require("mongoose");
 
 const app = express();
@@ -31,15 +32,49 @@ const facultySchema = new mongoose.Schema({
     email: String,
     linkedin: String,
     ongoing_project: String,
+    ongoing_research: String,
     subjects: [],
     education: [],
-    bio: []},
+    bio: [],
+    website: String,},
 { collection: 'facultyInfo'
 });
 
+const facultyImageSchema = new mongoose.Schema({
+   id: Number,
+   image:{
+        data: Buffer,
+        contentType: String
+   }
+
+});
+
+
 const facultyLoginCollection = mongoose.model("facultyLoginCollection", facultyLoginSchema);
 const facultyInfoCollection = mongoose.model("facultyInfoCollection", facultySchema);
+const facultyImageCollection = mongoose.model("facultyImageCollection", facultyImageSchema);
 
+/* ------------------------------- Set up Disk Storage for Files ----------------------------------------------*/
+
+const Storage = multer.diskStorage({
+    destination: './public/uploads',
+    filename: (req,file,cb) =>{
+        cb(null, file.originalname);
+    },
+});
+
+const upload = multer({
+    storage: Storage,
+}).single('testImage')
+
+
+
+/* ------------------------------------------------------------------------------------------------------------*/
+// Funtional Code
+
+function splitOnComma(str){
+    return (str.split(','));
+}
 
 
 app.get("/", function(req, res){
@@ -100,6 +135,36 @@ app.get("/login/compose/:id", function(req, res){
 
     });
     res.render("compose", {userId: req.params.id, canCompose: status});
+});
+
+app.post("/login/compose/:id", function(req,res){
+    const faculty = new facultyInfoCollection({
+        name: req.body.name,
+        cabin: req.body.cabin,
+        id: req.body.id,
+        school: req.body.department,
+        email: req.body.email,
+        linkedin: req.body.linkedin,
+        ongoing_project: req.body.project,
+        ongoing_research: req.body.research,
+        subjects: splitOnComma(req.body.subject),
+        education: splitOnComma(req.body.education),
+        bio: splitOnComma(req.body.bio),
+        website: req.body.website
+    });
+
+    const faculty_image = new facultyImageCollection({
+        id: req.body.id,
+        image: {
+            data:req.body.image,
+            contentType:'image/png'
+        }
+    });
+
+    faculty.save();
+    faculty_image.save();
+
+    res.redirect("/");
 });
 
 app.get("/login/edit/:id", function(req, res){
