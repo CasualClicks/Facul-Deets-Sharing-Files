@@ -3,9 +3,9 @@
     padding: 0;
 }
 body{
-    font-family: 'Source Serif Pro', serif;
+    font-family:'PT Serif', serif;
     font-weight: 400;
-    color: white;
+    color: black;
     background-color: #fff;
 }
 .header{
@@ -32,10 +32,10 @@ body{
 .nav{
     height: 15vh;
     background-color: #2B3258;
-    
+    color: white;
 }
 #top-container{
-    height: 100vh;
+    /* height: 150vh; */
 }
 .text-container{
     display: inline-flex;
@@ -133,6 +133,10 @@ body{
         font-family:'PT Serif', serif;
         font-size: 2rem;
     }
+
+    .bottom-address-container{
+        color: white;
+    }
     .bottom-address-container > p{
         font-family:'PT Serif', serif;
         font-size: 1.5rem;
@@ -144,6 +148,85 @@ body{
     a:hover{
         color: #f3b600;
     }
+    .bottom-links-container{
+        color: white;
+    }
     .bottom-social:hover{
         transform: scale(1.22);
     }
+
+    .area-1{
+        position: relative;
+        margin-top: 2rem;
+    }
+    
+    .area-1 > img{
+       
+        display: block;
+        margin: auto;
+        width: 18%;
+    }   
+
+    .area-1 > p{
+        text-align: center;
+        font-size: 3.5rem;
+    }
+    .area-1 > hr{
+        border: dotted 1rem;
+        width: 80%;
+        border-bottom: none;
+        margin: 10px auto;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    
+    }
+
+    .heading{
+        text-align: center;
+        margin-top: 15px;
+        margin-bottom: 50px;
+        font-family: 'Source Serif Pro', serif; 
+        font-size: 5rem;
+        font-weight: 400;
+        text-shadow: 2px 2px 4px #000000;
+        
+    }
+
+    .items{
+        width: 80%;
+        margin-left:9%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 100px;
+    }
+    
+    .social-image,.research-image{
+        
+        width: 33px;
+        height: 40px;
+    }
+    .column-felx{
+        display: flex;
+        flex-direction: column;
+
+    }
+    .column-flex > p{
+        font-size: 2rem;
+        font-weight: bold;
+        gap: 10px;
+    }
+    .body-anchor{
+        color: #000;
+        font-weight: 100;
+    }
+    .heading-items li{
+        font-family: 'Source Serif Pro', serif; 
+        font-size: 2.5rem;
+    }
+
+    .research-items{
+        justify-content: space-around;
+        
+    }
+    

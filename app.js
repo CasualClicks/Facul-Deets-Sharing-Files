@@ -37,16 +37,17 @@ const facultySchema = new mongoose.Schema({
     subjects: [],
     education: [],
     bio: [],
-    website: String,},
-{ collection: 'facultyInfo'
+    website: String},
+{ collection: 'facultyInfoCollection'
 });
 
 const facultyImageSchema = new mongoose.Schema({
    id: Number,
    image:{
         data: Buffer,
-        contentType: String
-   }
+        contentType: String},
+   },
+   { collection: 'facultyImageCollection'
 
 });
 
@@ -126,19 +127,21 @@ app.get("/login/comoredit/:id", function(req, res){
 });
 
 app.get("/login/compose/:id", function(req, res){
-    var status = false;
+    
     // Checking in Existing collection of Info, Not in login credentials
     facultyInfoCollection.findOne({id: req.params.id},function(err,found){
         if(err)
             console.log(err);
         else if(found)
-            status = true;
-
-    });
-    res.render("compose", {userId: req.params.id, isData: status});
+            res.render("compose", {userId: req.params.id, isData: true});
+        else
+            res.render("compose", {userId: req.params.id, isData: false});
+    });   
 });
 
 app.post("/login/compose/:id", function(req,res){
+    console.log(req.body.linkedin);
+    console.log(req.body.website);
     const faculty = new facultyInfoCollection({
         name: req.body.name,
         cabin: req.body.cabin,
@@ -169,18 +172,52 @@ app.post("/login/compose/:id", function(req,res){
 });
 
 app.get("/login/edit/:id", function(req, res){
-    var status = false;
+    
     facultyInfoCollection.findOne({id: req.params.id}, function(err,found){
         if(err)
             console.log(err);
         else if(found)
-            status = true;
+            res.render("edit", {userId: req.params.id, canEdit: true});
+        else    
+            res.render("edit", {userId: req.params.id, canEdit: false});
+    }); 
+    
+});
+
+
+/* Methods for Faculty - Details Inside Page */
+
+app.get("/faculty_page/:id", function(req,res){
+    facultyInfoCollection.findOne({id: req.params.id}, function(err, found){
+        if(err)
+            console.log(err);
+        else{
+            res.render("faculty_detail", {
+                id: found.id, 
+                name: found.name,
+                department: found.school,
+                cabin: found.cabin,
+                linkedin: found.linkedin,
+                email: found.email,
+                website: found.website,
+                subject: found.subjects,
+                research: found.ongoing_research,
+                project: found.ongoing_project,
+                education: found.education,
+                bio: found.bio
+                //
+            });
+        }
     });
-    res.render("edit", {userId: req.params.id, canEdit: status});
+    
 });
 
 
 
+
+
+
+/* --------------------------------------------------- */
 
 app.listen(process.env.PORT || 3001, function() {
     console.log("Server started on port 3001");
