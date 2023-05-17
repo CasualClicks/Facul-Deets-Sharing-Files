@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express= require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const lodash = require('lodash');
 const multer = require('multer');
+const path = require('path');
 const { Mongoose } = require("mongoose");
 
 const app = express();
@@ -15,12 +17,12 @@ app.use(express.static("public"));
 // MongoDB 
 const mongoose = require("mongoose");
 const e = require("express");
-mongoose.connect("mongodb+srv://shivam:Af7UZuvf55lAXesd@facul-deets-cluster.su1btrk.mongodb.net/facultyDB", {useNewUrlParser:true,useUnifiedTopology: true});
+mongoose.connect(process.env.MONGO_URL, {useNewUrlParser:true,useUnifiedTopology: true});
 
 const facultyLoginSchema = new mongoose.Schema({
     id: Number,
     password: String},
-    {
+    {   
 
     collection : 'facultyLoginCollection'
 });
@@ -37,7 +39,11 @@ const facultySchema = new mongoose.Schema({
     subjects: [],
     education: [],
     bio: [],
-    website: String},
+    website: String,
+    image:{
+        data: Buffer,
+        contentType: String},
+    },
 { collection: 'facultyInfoCollection'
 });
 
@@ -75,7 +81,10 @@ const upload = multer({
 // Funtional Code
 
 function splitOnComma(str){
-    return (str.split(','));
+    if(str && typeof str == 'string')
+        return (str.split(','));
+    else   
+        return [];
 }
 
 
@@ -154,19 +163,23 @@ app.post("/login/compose/:id", function(req,res){
         subjects: splitOnComma(req.body.subject),
         education: splitOnComma(req.body.education),
         bio: splitOnComma(req.body.bio),
-        website: req.body.website
-    });
-
-    const faculty_image = new facultyImageCollection({
-        id: req.body.id,
+        website: req.body.website,
         image: {
-            data:req.body.image,
-            contentType:'image/png'
+            data: req.body.image,
+            contentType: 'image/png'
         }
     });
 
+    // const faculty_image = new facultyImageCollection({
+    //     id: req.body.id,
+    //     image: {
+    //         data:req.body.image,
+    //         contentType:'image/png'
+    //     }
+    // });
+
     faculty.save();
-    faculty_image.save();
+    // faculty_image.save();
 
     res.redirect("/");
 });
@@ -204,7 +217,8 @@ app.get("/faculty_page/:id", function(req,res){
                 research: found.ongoing_research,
                 project: found.ongoing_project,
                 education: found.education,
-                bio: found.bio
+                bio: found.bio,
+                // image: found.image
                 //
             });
         }
