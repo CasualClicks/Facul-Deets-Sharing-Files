@@ -153,6 +153,38 @@ app.get("/faculty_page/cards/:school", function(req,res){
     });
 });
 
+app.get("/login/change_password/",function(req,res){
+    res.render("password_reset");
+});
+
+app.post("/login/change_password/",function(req,res){
+    console.log(req.body.current_password);
+    console.log(req.body.new_password);
+    facultyLoginCollection.findOne({id:req.body.userid},function(err,found){
+        if(err)
+            console.log(err);
+        else if(found)
+        {
+            // console.log("user id match, found"+found.password);
+            if(found.password == req.body.current_password)
+            {
+                console.log("password-match");
+                // facultyLoginCollection.findOne({id:req.body.userid}, function(err,found){
+                //     console.log(found);
+                // });
+                facultyLoginCollection.updateOne({id:req.body.userid},{password: req.body.new_password}, function(err){
+                    if(err)
+                        console.log(err);
+                    else    
+                        console.log("update successfull");
+                });
+                res.redirect("/about");
+            }
+            else{res.redirect("/login/")};
+        }
+    });
+});
+
 
 
 app.get("/about", function(req, res){
@@ -268,7 +300,7 @@ app.get("/login/edit/:id", function(req, res){
 });
 
 app.post("/login/edit/:id", function(req,res){
-    facultyInfoCollection.updateOne({id:req.params.id},{$set: {
+    facultyInfoCollection.updateOne({id:req.params.id},{
         name: req.body.name,
         cabin: req.body.cabin,
         id: req.body.id,
@@ -285,7 +317,12 @@ app.post("/login/edit/:id", function(req,res){
             data: req.body.image,
             contentType: 'image/png'
         }
-    }});
+    }, function(err){
+        if(err)
+            console.log(err);
+        else    
+            console.log("form update succefull");
+    });
 });
 
 
