@@ -189,12 +189,51 @@ app.get("/login/edit/:id", function(req, res){
     facultyInfoCollection.findOne({id: req.params.id}, function(err,found){
         if(err)
             console.log(err);
-        else if(found)
-            res.render("edit", {userId: req.params.id, canEdit: true});
+        else if(found){
+            res.render("edit",{
+
+                userId: req.params.id, 
+                canEdit: true,
+                name: found.name,
+                id: found.id,
+                cabin: found.cabin,
+                department: found.department,
+                email: found.email,
+                linkedin: found.linkedin,
+                website: found.website,
+                research: found.ongoing_research,
+                project: found.ongoing_project,
+                subject: found.subjects,
+                education: found.education,
+                bio: found.bio
+
+            });
+        }
         else    
             res.render("edit", {userId: req.params.id, canEdit: false});
     }); 
     
+});
+
+app.post("/login/edit/:id", function(req,res){
+    facultyInfoCollection.updateOne({id:req.params.id},{$set: {
+        name: req.body.name,
+        cabin: req.body.cabin,
+        id: req.body.id,
+        school: req.body.department,
+        email: req.body.email,
+        linkedin: req.body.linkedin,
+        ongoing_project: req.body.project,
+        ongoing_research: req.body.research,
+        subjects: splitOnComma(req.body.subject),
+        education: splitOnComma(req.body.education),
+        bio: splitOnComma(req.body.bio),
+        website: req.body.website,
+        image: {
+            data: req.body.image,
+            contentType: 'image/png'
+        }
+    }});
 });
 
 
@@ -225,10 +264,6 @@ app.get("/faculty_page/:id", function(req,res){
     });
     
 });
-
-
-
-
 
 
 /* --------------------------------------------------- */
