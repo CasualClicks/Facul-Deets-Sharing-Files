@@ -103,6 +103,58 @@ app.get("/faculty_page/", function(req, res){
     res.render("faculty_page");
 });
 
+
+app.get("/faculty_page/card/", function(req, res){
+    facultyInfoCollection.find({},function(err, found){
+        if(err)
+            console.log(err);
+        else if(found)
+        {
+            let arr = [];
+            arr.push(found);
+            res.render("faculty_page_card",{array: arr[0]});
+        }
+    });
+});
+
+app.post("/faculty_page/card/:anything", function(req,res){
+    console.log(req.body.search);
+    res.redirect("/faculty_page/card/"+req.body.search);
+});
+/* Mujhe ye daalna pada because of card and cards difference */
+app.post("/faculty_page/cards/:anything", function(req,res){
+    console.log(req.body.search);
+    res.redirect("/faculty_page/card/"+req.body.search);
+});
+
+app.get("/faculty_page/card/:id", function(req, res){
+    facultyInfoCollection.find({id:req.params.id},function(err, found){
+        if(err)
+            console.log(err);
+        else if(found)
+        {
+            let arr = [];
+            arr.push(found);
+            res.render("faculty_page_card",{array: arr[0]});
+        }
+    });
+});
+
+app.get("/faculty_page/cards/:school", function(req,res){
+    facultyInfoCollection.find({school:req.params.school},function(err, found){
+        if(err)
+            console.log(err);
+        else if(found)
+        {
+            let arr = [];
+            arr.push(found);
+            res.render("faculty_page_card",{array: arr[0]});
+        }
+    });
+});
+
+
+
 app.get("/about", function(req, res){
     res.render("about_page");
 })
